@@ -1,0 +1,3 @@
+[deps]
+DiffusionSplineFE = "a23f314f-3970-41ba-9c5a-c51272d7dba6"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
