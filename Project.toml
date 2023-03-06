@@ -3,6 +3,16 @@ uuid = "a23f314f-3970-41ba-9c5a-c51272d7dba6"
 authors = ["Joris Thiel <joris.thiel@tum.de>"]
 version = "0.1.0"
 
+[deps]
+BSplineKit = "093aae92-e908-43d7-9660-e50ee39d5a0a"
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+MakieCore = "20f20a25-4f0e-4fdf-b5d1-57303727442b"
+OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+PlotUtils = "995b91a9-d308-5afd-9ec6-746e21dbc043"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
 [compat]
 julia = "1.8"
 
