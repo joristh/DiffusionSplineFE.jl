@@ -45,7 +45,7 @@ function SplineComplex(domain::Tuple{T,T}=(-1.0, 1.0), n::Int=11, order::Int=4) 
 end
 
 """
-    approximate_nonlinear(SC::SplineComplex, f, a)
+    _approximate_nonlinear(SC::SplineComplex, f, a)
 
 Return coefficients for approximation of nonlinear function f(x, Tₕ(a)) in spline space B.
 
@@ -58,7 +58,7 @@ function _approximate_nonlinear(SC::SplineComplex{T}, f::Function, a::Vector{T})
 end
 
 """
-    approximate_nonlinear!(d, SC::SplineComplex, f, a)
+    _approximate_nonlinear!(d, SC::SplineComplex, f, a)
 
 Fill preallocated coefficient vector, see also [`_approximate_nonlinear`](@ref).
 """
@@ -68,9 +68,9 @@ function _approximate_nonlinear!(d::Vector{T}, SC::SplineComplex{T}, f::Function
 end
 
 """
-    approximate_nonlinear(f, SC::SplineComplex)
+    _approximate_nonlinear(f, SC::SplineComplex)
 
-Return coefficients for approximation of function f(x) in spline space B, see also [`_approximate_nonlinear`](@ref).
+Return coefficients for approximation of space-dependent function f(x) in spline space B.
 """
 function _approximate_nonlinear(SC::SplineComplex{T}, f::Function) where {T}
     d = convert.(T, SC.I₂ \ f.(SC.ξ))
