@@ -1,41 +1,39 @@
-function sol_to_matrix(sc::SplineComplex, sol::ODESolution, resolution::Int)
-    x = range(minimum(sc.B.t), maximum(sc.B.t), length=resolution)
+function sol_to_matrix(SC::SplineComplex, sol::ODESolution, resolution::Int)
+    x = range(minimum(SC.B.t), maximum(SC.B.t), length=resolution)
     data = zeros(length(sol.t), resolution)
     for (i, u) in enumerate(sol.u)
-        S = Spline(sc.R, u)
+        S = Spline(SC.R, u)
         data[i, :] .= S.(x)
     end
     return data
 end
 
-function eval_spline(sc::SplineComplex, coeffs::Vector, resolution::Int)
-    return Spline(sc.R, coeffs).(range(minimum(sc.B.t), maximum(sc.B.t), length=resolution))
+function eval_spline(SC::SplineComplex, coeffs::Vector, resolution::Int)
+    return Spline(SC.R, coeffs).(range(minimum(SC.B.t), maximum(SC.B.t), length=resolution))
 end
 
-function get_grid(sc::SplineComplex, resolution::Int)
-    return range(minimum(sc.B.t), maximum(sc.B.t), length=resolution)
+function get_grid(SC::SplineComplex, resolution::Int)
+    return range(minimum(SC.B.t), maximum(SC.B.t), length=resolution)
 end
 
-MakieCore.convert_arguments(P::MakieCore.PointBased, sc::SplineComplex, coeffs::Vector, resolution::Int=100) = MakieCore.convert_arguments(P, get_grid(sc, resolution), eval_spline(sc, coeffs, resolution))
+MakieCore.convert_arguments(P::MakieCore.PointBased, SC::SplineComplex, coeffs::Vector, resolution::Int=100) = MakieCore.convert_arguments(P, get_grid(SC, resolution), eval_spline(SC, coeffs, resolution))
 
-MakieCore.convert_arguments(P::Type{<:Heatmap}, sc::SplineComplex, sol::ODESolution, resolution::Int=100) = MakieCore.convert_arguments(P, sol_to_matrix(sc, sol, resolution))
+MakieCore.convert_arguments(P::Type{<:Heatmap}, SC::SplineComplex, sol::ODESolution, resolution::Int=100) = MakieCore.convert_arguments(P, sol_to_matrix(SC, sol, resolution))
 
 
-MakieCore.@recipe(DiffusionPlot, sc, sol, resolution) do scene
+MakieCore.@recipe(DiffusionPlot, SC, sol, resolution) do scene
     MakieCore.Theme(
-        cmap = :viridis
+        cmap=:viridis
     )
 end
 
 function MakieCore.plot!(diffusionplot::DiffusionPlot)
     sol = diffusionplot[:sol].val
-    sc  = diffusionplot[:sc].val
+    SC = diffusionplot[:SC].val
     color = cgrad(diffusionplot[:cmap].val)
     tmax = maximum(sol.t)
-    for (i,t) in enumerate(sol.t)
-        lines!(diffusionplot, sc, sol.u[i], diffusionplot[:resolution], color=get(color, t/tmax))
+    for (i, t) in enumerate(sol.t)
+        lines!(diffusionplot, SC, sol.u[i], diffusionplot[:resolution], color=get(color, t / tmax))
     end
     diffusionplot
 end
-
-# default value for resolution??

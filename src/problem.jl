@@ -36,9 +36,9 @@ function DiffusionProblem(SC::SplineComplex{T}, C::Function, D::Function, S::Fun
 
     M_tensor, A_tensor, S_matrix = _assemble_tensors(SC)
 
-    c = _approximate_nonlinear(C, SC)
-    d = _approximate_nonlinear(D, SC)
-    s = _approximate_nonlinear(S, SC)
+    c = _approximate_nonlinear(SC, C)
+    d = _approximate_nonlinear(SC, D)
+    s = _approximate_nonlinear(SC, S)
 
     function f!(du, u, params, t)
         mul!(du, params.A, u)
@@ -77,13 +77,13 @@ function GeneralDiffusionProblem(SC::SplineComplex{T}, C::Function, D::Function,
 
     M_tensor, A_tensor, S_matrix = _assemble_tensors(SC)
 
-    c = _approximate_nonlinear(C, SC)
+    c = _approximate_nonlinear(SC, C)
     M = M_tensor * c
 
     function f!(du, u, params, t)
-        d = _approximate_nonlinear(u, D, SC)
+        d = _approximate_nonlinear(SC, D, u)
         mul!(du, params.A_tensor * -d, u)
-        s = _approximate_nonlinear(u, S, SC)
+        s = _approximate_nonlinear(SC, S, u)
         du .+= params.S_matrix * s
         ldiv!(du, params.M, du)
     end
