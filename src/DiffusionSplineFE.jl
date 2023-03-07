@@ -1,12 +1,11 @@
 module DiffusionSplineFE
 
-using BSplineKit, LinearAlgebra, OrdinaryDiffEq, SparseArrays, MakieCore, RecipesBase, ColorSchemes, PlotUtils
+using BSplineKit, LinearAlgebra, OrdinaryDiffEq, SparseArrays, MakieCore, ColorSchemes, PlotUtils
 
 include("splines.jl")
 include("problem.jl")
-#include("solve.jl")
 include("plot.jl")
 
-export SplineComplex, approximate_nonlinear, LinearDiffusionProblem, NonlinearDiffusionProblem, solve, plot
+export SplineComplex, initial_coefficients, DiffusionProblem, GeneralDiffusionProblem
 
 end
