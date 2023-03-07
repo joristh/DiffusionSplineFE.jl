@@ -1,4 +1,11 @@
+# Julia
+
 *.jl.*.cov
 *.jl.cov
 *.jl.mem
 /docs/build/
+
+# Jupyter-Notebooks
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
