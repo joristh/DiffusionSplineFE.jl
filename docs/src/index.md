@@ -29,7 +29,7 @@ For the problem, all three functions $C, D, S$ have to be defined. Let us assume
 
 ```julia
 C(x) = one(x)
-D(x) = 0.001 #scalar diffusivity
+D(x) = 0.002 #scalar diffusivity
 S(x) = zero(x)
 ```
 
@@ -59,6 +59,11 @@ lines!(ax, SC, sol[1], color=:red, linestyle=:dash, linewidth=5)
 ```
 
 ![Diffusion plot](diffusionplot.png)
+
+```julia
+heatmap(SC, sol)
+```
+
 ![Diffusion heatmap](heatmap.png)
 
 
