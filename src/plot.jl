@@ -1,4 +1,4 @@
-function sol_to_matrix(SC::SplineComplex, sol::ODESolution, resolution::Int)
+function sol_to_matrix(SC::SplineComplex, sol::ODESolution, resolution::Int=100)
     x = range(minimum(SC.B.t), maximum(SC.B.t), length=resolution)
     data = zeros(length(sol.t), resolution)
     for (i, u) in enumerate(sol.u)
@@ -6,6 +6,13 @@ function sol_to_matrix(SC::SplineComplex, sol::ODESolution, resolution::Int)
         data[i, :] .= S.(x)
     end
     return data
+end
+
+function coeffs_to_fct(SC::SplineComplex, coeffs::Vector)
+    if length(coeffs) != SC.R.M.M
+        throw(DimensionMismatch("Coefficient vector (n=$(length(coeffs))) and spline complex (n=$(SC.R.M.M)) are not compatible."))
+    end
+    return Spline(SC.R, coeffs)
 end
 
 function eval_spline(SC::SplineComplex, coeffs::Vector, resolution::Int)
