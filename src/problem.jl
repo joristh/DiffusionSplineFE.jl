@@ -3,7 +3,7 @@
 
 Helper function to compute all needed Galerkin tensors and matrices.
 """
-function _assemble_tensors(SC::SplineComplex{T}) where {T}
+function _assemble_tensors(SC::SplineComplex{k,T}) where {k,T}
     A_tensor = galerkin_tensor((SC.R, SC.R, SC.B), (Derivative(1), Derivative(1), Derivative(0)), T)
     M_tensor = galerkin_tensor((SC.R, SC.R, SC.B), (Derivative(0), Derivative(0), Derivative(0)), T)
     S_matrix = galerkin_matrix((SC.R, SC.B), SparseMatrixCSC{T})
@@ -15,7 +15,7 @@ end
 
 Compute coefficient vector of initial condition in recombined spline space R.
 """
-function initial_coefficients(SC::SplineComplex{T}, f::Function) where {T}
+function initial_coefficients(SC::SplineComplex{k,T}, f::Function) where {k,T}
     coefficients(approximate(f, SC.R))
 end
 
@@ -26,7 +26,7 @@ Set up OrdinaryDiffEq.ODEProblem for equation with only space-dependent capacity
 
 Alternative initialization with u0::Function instead of u0::Vector.
 """
-function DiffusionProblem(SC::SplineComplex{T}, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple) where {T}
+function DiffusionProblem(SC::SplineComplex{k,T}, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple) where {k,T}
 
     if length(u0) != SC.R.M.M
         throw(DimensionMismatch("Initial coefficient vector (n=$(length(u0))) and spline complex (n=$(SC.R.M.M)) are not compatible."))
@@ -67,7 +67,7 @@ Set up OrdinaryDiffEq.ODEProblem for equation with space- and value-dependent di
 
 Alternative initialization with u0::Function instead of u0::Vector.
 """
-function GeneralDiffusionProblem(SC::SplineComplex{T}, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple) where {T}
+function GeneralDiffusionProblem(SC::SplineComplex{k,T}, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple) where {k,T}
 
     if length(u0) != SC.R.M.M
         throw(DimensionMismatch("Initial coefficient vector (n=$(length(u0))) and spline complex (n=$(SC.R.M.M)) are not compatible."))

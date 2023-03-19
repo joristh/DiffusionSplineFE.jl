@@ -1,15 +1,15 @@
-abstract type AbstractSplineComplex{T} end
+abstract type AbstractSplineComplex{k,T} end
 
 """
-    SplineComplex{T}
+    SplineComplex{k, T}
 
-1D B-Spline bases and collocation matrices
+1D B-Spline bases (order k with numeric type T) and collocation matrices
 
 # Initialization 
 By knot sequence or domain interval and number of points
 
 * SplineComplex(knots::Vector{T}, order::Int=4)
-* SplineComplex(domain::Tuple=(-1.0, 1.0), n::Int=11, order::Int=4)
+* SplineComplex(domain::Tuple(T,T)=(-1.0, 1.0), n::Int=11, order::Int=4)
 
 # Fields
 
@@ -19,9 +19,9 @@ By knot sequence or domain interval and number of points
 * `I₁`: Collocation matrix of R
 * `I₂`: Collocation matrix of B
 """
-struct SplineComplex{T<:AbstractFloat} <: AbstractSplineComplex{T}
-    B::AbstractBSplineBasis
-    R::AbstractBSplineBasis
+struct SplineComplex{k,T<:AbstractFloat} <: AbstractSplineComplex{k,T}
+    B::AbstractBSplineBasis{k,T}
+    R::AbstractBSplineBasis{k,T}
     ξ::Vector{T}
     I₁::SparseMatrixCSC{T}
     I₂::SparseMatrixCSC{T}
@@ -36,7 +36,7 @@ function SplineComplex(knots::Vector{T}, order::Int=4) where {T<:AbstractFloat}
     I₁ = collocation_matrix(R, ξ, SparseMatrixCSC{T})
     I₂ = collocation_matrix(B, ξ, SparseMatrixCSC{T})
 
-    return SplineComplex{T}(B, R, ξ, I₁, I₂)
+    return SplineComplex{order,T}(B, R, ξ, I₁, I₂)
 end
 
 function SplineComplex(domain::Tuple{T,T}=(-1.0, 1.0), n::Int=11, order::Int=4) where {T}
@@ -51,7 +51,7 @@ Return coefficients for approximation of nonlinear function f(x, Tₕ(a)) in spl
 
 The approximation is based on interpolation at the Greville points.
 """
-function _approximate_nonlinear(SC::SplineComplex{T}, f::Function, a::Vector{T}) where {T}
+function _approximate_nonlinear(SC::SplineComplex{k,T}, f::Function, a::Vector{T}) where {k,T}
     d = ones(T, length(SC.ξ))
     _approximate_nonlinear!(d, SC, f, a)
     return d
@@ -62,7 +62,7 @@ end
 
 Fill preallocated coefficient vector, see also [`_approximate_nonlinear`](@ref).
 """
-function _approximate_nonlinear!(d::Vector{T}, SC::SplineComplex{T}, f::Function, a::Vector{T}) where {T}
+function _approximate_nonlinear!(d::Vector{T}, SC::SplineComplex{k,T}, f::Function, a::Vector{T}) where {k,T}
     d .= convert.(T, SC.I₂ \ f.(SC.ξ, SC.I₁ * a))
     return nothing
 end
@@ -72,7 +72,7 @@ end
 
 Return coefficients for approximation of space-dependent function f(x) in spline space B.
 """
-function _approximate_nonlinear(SC::SplineComplex{T}, f::Function) where {T}
+function _approximate_nonlinear(SC::SplineComplex{k,T}, f::Function) where {k,T}
     d = convert.(T, SC.I₂ \ f.(SC.ξ))
     return d
 end
