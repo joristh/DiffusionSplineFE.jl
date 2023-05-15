@@ -51,7 +51,7 @@ Return coefficients for approximation of nonlinear function f(x, Tₕ(a)) in spl
 
 The approximation is based on interpolation at the Greville points.
 """
-function _approximate_nonlinear(SC::SplineComplex{k,T}, f::Function, a::Vector{T}) where {k,T}
+function _approximate_nonlinear(SC::SplineComplex{k,T}, f, a::Vector{T}) where {k,T}
     d = ones(T, length(SC.ξ))
     _approximate_nonlinear!(d, SC, f, a)
     return d
@@ -62,7 +62,7 @@ end
 
 Fill preallocated coefficient vector, see also [`_approximate_nonlinear`](@ref).
 """
-function _approximate_nonlinear!(d::Vector{T}, SC::SplineComplex{k,T}, f::Function, a::Vector{T}) where {k,T}
+function _approximate_nonlinear!(d::Vector{T}, SC::SplineComplex{k,T}, f, a::Vector{T}) where {k,T}
     d .= convert.(T, SC.I₂ \ f.(SC.ξ, SC.I₁ * a))
     return nothing
 end
@@ -72,7 +72,7 @@ end
 
 Return coefficients for approximation of space-dependent function f(x) in spline space B.
 """
-function _approximate_nonlinear(SC::SplineComplex{k,T}, f::Function) where {k,T}
+function _approximate_nonlinear(SC::SplineComplex{k,T}, f) where {k,T}
     d = convert.(T, SC.I₂ \ f.(SC.ξ))
     return d
 end

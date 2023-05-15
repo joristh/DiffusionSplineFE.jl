@@ -11,22 +11,22 @@ function _assemble_tensors(SC::SplineComplex{k,T}) where {k,T}
 end
 
 """
-    initial_coefficients(SC::SplineComplex, f::Function)
+    initial_coefficients(SC::SplineComplex, f)
 
 Compute coefficient vector of initial condition in recombined spline space R.
 """
-function initial_coefficients(SC::SplineComplex{k,T}, f::Function) where {k,T}
+function initial_coefficients(SC::SplineComplex{k,T}, f) where {k,T}
     coefficients(approximate(f, SC.R))
 end
 
 """
-    DiffusionProblem(SC::SplineComplex, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple)
+    DiffusionProblem(SC::SplineComplex, C, D, S, u0::Vector, tspan::Tuple)
 
 Set up OrdinaryDiffEq.ODEProblem for equation with only space-dependent capacity C, diffusion D, and source S.
 
 Alternative initialization with u0::Function instead of u0::Vector.
 """
-function DiffusionProblem(SC::SplineComplex{k,T}, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple) where {k,T}
+function DiffusionProblem(SC::SplineComplex{k,T}, C, D, S, u0::Vector, tspan::Tuple) where {k,T}
 
     if length(u0) != SC.R.M.M
         throw(DimensionMismatch("Initial coefficient vector (n=$(length(u0))) and spline complex (n=$(SC.R.M.M)) are not compatible."))
@@ -55,19 +55,19 @@ function DiffusionProblem(SC::SplineComplex{k,T}, C::Function, D::Function, S::F
     return ODEProblem(f!, u0, tspan, params)
 end
 
-function DiffusionProblem(SC::SplineComplex, C::Function, D::Function, S::Function, u0::Function, tspan::Tuple)
+function DiffusionProblem(SC::SplineComplex, C, D, S, u0::Function, tspan::Tuple)
     u0_vector = initial_coefficients(SC, u0)
     DiffusionProblem(SC, C, D, S, u0_vector, tspan)
 end
 
 """
-    DiffusionProblem(SC::SplineComplex, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple)
+    DiffusionProblem(SC::SplineComplex, C, D, S, u0::Vector, tspan::Tuple)
 
 Set up OrdinaryDiffEq.ODEProblem for equation with space- and value-dependent diffusion D, and source S.
 
 Alternative initialization with u0::Function instead of u0::Vector.
 """
-function GeneralDiffusionProblem(SC::SplineComplex{k,T}, C::Function, D::Function, S::Function, u0::Vector, tspan::Tuple) where {k,T}
+function GeneralDiffusionProblem(SC::SplineComplex{k,T}, C, D, S, u0::Vector, tspan::Tuple) where {k,T}
 
     if length(u0) != SC.R.M.M
         throw(DimensionMismatch("Initial coefficient vector (n=$(length(u0))) and spline complex (n=$(SC.R.M.M)) are not compatible."))
@@ -100,7 +100,7 @@ function GeneralDiffusionProblem(SC::SplineComplex{k,T}, C::Function, D::Functio
     return ODEProblem(f!, u0, tspan, params)
 end
 
-function GeneralDiffusionProblem(SC::SplineComplex, C::Function, D::Function, S::Function, u0::Function, tspan::Tuple)
+function GeneralDiffusionProblem(SC::SplineComplex, C, D, S, u0::Function, tspan::Tuple)
     u0_vector = initial_coefficients(SC, u0)
     GeneralDiffusionProblem(SC, C, D, S, u0_vector, tspan)
 end
