@@ -13,7 +13,7 @@ PlotUtils = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
-BSplineKit = "0.14, 0.15"
+BSplineKit = "0.14, 0.15, 0.16"
 ColorSchemes = "3"
 MakieCore = "0.6"
 OrdinaryDiffEq = "6"
